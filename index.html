@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Feliz Día del Novio</title>
+    <style>
+        body {
+            background-image: url('a.jpeg');
+            background-repeat: repeat;
+            background-size: 500px;
+            background-attachment: fixed;
+            margin: 0;
+            padding: 20px;
+        }
+
+        @font-face {
+            font-family: 'Seramonde';
+            src: url('Seramonde Trial.otf') format('opentype');
+        }
+
+        h1 {
+            font-family: 'Seramonde', cursive, sans-serif;
+            color: #FF0005;
+            text-align: center;
+            font-size: 40px;
+            text-shadow: 3px 3px 5px #FFFFFF;
+        }
+
+        h2 {
+            font-family: 'Seramonde', sans-serif;
+            color: #FFFFFF;
+            background-color: #FF0005;
+            text-align: center;
+            padding: 10px 15px;
+            border-radius: 10px;
+            width: fit-content;
+            margin: 20px auto;
+        }
+
+        /* PANTALLA DE BIENVENIDA */
+        #pantalla-inicio {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 240, 242, 0.98);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+
+        #pantalla-inicio.oculto {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        /* ESTILO BASE PARA LOS SOBRES */
+        .wrapper-sobre {
+            position: relative;
+            width: 280px;
+            height: 180px;
+            background-color: #FF0005;
+            margin: 30px auto;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .wrapper-sobre:hover {
+            transform: scale(1.03);
+        }
+
+        .solapa {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 140px solid transparent;
+            border-right: 140px solid transparent;
+            border-top: 100px solid #D60004;
+            transform-origin: top;
+            transition: transform 0.5s ease;
+            z-index: 3;
+        }
+
+        .bolsillo {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 140px solid #FF1A1E;
+            border-right: 140px solid #FF1A1E;
+            border-bottom: 90px solid #FF0005;
+            border-radius: 0 0 10px 10px;
+            z-index: 2;
+        }
+
+        .carta-oculta {
+            position: absolute;
+            bottom: 10px;
+            left: 15px;
+            width: 250px;
+            background-color: #FFFFFF;
+            padding: 15px;
+            box-sizing: border-box;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            transition: transform 0.6s ease, opacity 0.4s ease;
+            z-index: 1;
+            font-family: Arial, sans-serif;
+            color: #FF0005;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .wrapper-sobre.abierto .solapa {
+            transform: rotateX(180deg);
+            z-index: 0;
+        }
+
+        .wrapper-sobre.abierto .carta-oculta {
+            transform: translateY(-110px);
+            z-index: 4;
+        }
+
+        /* SOBRE GRANDE */
+        .wrapper-sobre.sobre-grande {
+            width: 600px;
+            height: 380px;
+            border-radius: 0 0 15px 15px;
+            overflow: hidden;
+        }
+
+        .wrapper-sobre.sobre-grande .solapa {
+            border-left: 300px solid transparent;
+            border-right: 300px solid transparent;
+            border-top: 210px solid #D60004;
+        }
+
+        .wrapper-sobre.sobre-grande .bolsillo {
+            border-left: 300px solid #FF1A1E;
+            border-right: 300px solid #FF1A1E;
+            border-bottom: 190px solid #FF0005;
+            border-radius: 0 0 15px 15px;
+        }
+
+        .wrapper-sobre.sobre-grande .carta-oculta {
+            bottom: 0;
+            left: 30px;
+            width: 540px;
+            padding: 25px;
+            font-size: 22px;
+            opacity: 0;
+        }
+
+        .wrapper-sobre.sobre-grande.abierto .carta-oculta {
+            transform: translateY(-220px);
+            opacity: 1;
+        }
+
+        /* ESTILOS GENERALES Y SECCIONES */
+        .cuadro-escrito {
+            width: 80%;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 25px;
+            background-color: rgba(255, 240, 242, 0.95);
+            border: 2px solid #FF0005;
+            border-radius: 15px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            font-family: Arial, sans-serif;
+            color: #333333;
+            font-size: 18px;
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        /* ESTILOS DE LA MÁQUINA DE ESCRIBIR */
+        .cuadro-maquina {
+            width: 80%;
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 30px;
+            background-color: #FFFDF9;
+            border: 2px dashed #FF0005;
+            border-radius: 15px;
+            box-shadow: 0px 4px 12px rgba(255, 0, 5, 0.15);
+            text-align: left;
+            position: relative;
+        }
+
+        .texto-maquina {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 18px;
+            color: #2C2C2C;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            min-height: 120px;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 20px;
+            background-color: #FF0005;
+            margin-left: 4px;
+            animation: parpadeo 0.7s infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes parpadeo {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .boton-maquina {
+            display: block;
+            margin: 20px auto 0 auto;
+            padding: 12px 25px;
+            font-size: 16px;
+            font-weight: bold;
+            background-color: #FF0005;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+        }
+
+        .boton-maquina:hover {
+            background-color: #D60004;
+            transform: scale(1.05);
+        }
+
+        .boton-enlace {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 18px 35px;
+            font-size: 24px;
+            font-weight: bold;
+            background-color: #FF0005;
+            color: #FFFFFF;
+            text-decoration: none;
+            border-radius: 30px;
+            box-shadow: 0px 5px 15px rgba(255, 0, 5, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .boton-enlace:hover {
+            background-color: #D60004;
+            transform: scale(1.08);
+        }
+
+        .cuadro-collage {
+            width: 85%;
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border: 2px solid #FF0005;
+            border-radius: 15px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .galeria-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .galeria-grid img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 2px solid #FF0005;
+            box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .galeria-grid img:hover {
+            transform: scale(1.08) rotate(2deg);
+            box-shadow: 0px 6px 12px rgba(255, 0, 5, 0.3);
+            z-index: 2;
+        }
+
+        .cuadro-raspadita {
+            width: 90%;
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border: 2px solid #FF0005;
+            border-radius: 15px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .contenedor-video {
+            position: relative;
+            width: 100%;
+            max-width: 320px;
+            height: 568px;
+            margin: 15px auto 0 auto;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 2px solid #FF0005;
+            background-color: #000000;
+        }
+
+        .contenedor-video video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        .contenedor-video canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            cursor: pointer;
+        }
+
+        .boton-reproducir {
+            margin-top: 15px;
+            padding: 10px 20px;
+            font-size: 18px;
+            font-weight: bold;
+            background-color: #FF0005;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s;
+        }
+
+        .boton-reproducir:hover {
+            transform: scale(1.05);
+            background-color: #D60004;
+        }
+
+        /* 🔐 ESTILOS CAJA FUERTE (IDEA 6) */
+        .cuadro-caja-fuerte {
+            width: 85%;
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 30px 20px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border: 2px solid #FF0005;
+            border-radius: 15px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+
+        .caja-fuerte-container {
+            background: #FFC0CB;
+            border: 4px solid #ff0015;
+            border-radius: 20px;
+            padding: 25px;
+            max-width: 420px;
+            margin: 20px auto;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            color: white;
+            position: relative;
+        }
+
+        .candado-icon {
+            font-size: 50px;
+            margin-bottom: 10px;
+            transition: transform 0.4s ease;
+        }
+
+        .input-clave {
+            width: 80%;
+            padding: 12px;
+            font-size: 22px;
+            text-align: center;
+            letter-spacing: 5px;
+            border: 2px solid #FF0005;
+            border-radius: 10px;
+            background-color: #ffffff;
+            color: red;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            outline: none;
+            margin-bottom: 15px;
+        }
+
+        .boton-caja {
+            padding: 12px 25px;
+            font-size: 16px;
+            font-weight: bold;
+            background-color: #FF0005;
+            color:rgba(255, 255, 255, 0.95);
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+        }
+
+        .boton-caja:hover {
+            background-color: #FF0005;
+            transform: scale(1.05);
+        }
+
+        .mensaje-error {
+            color: #ff4d4d;
+            font-size: 14px;
+            margin-top: 10px;
+            font-weight: bold;
+            min-height: 20px;
+        }
+
+        .contenido-secreto {
+            display: none;
+            background-color: #fffdf9;
+            border: 2px solid #FF0005;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            color: #333;
+            animation: aparecerSecret 0.8s ease forwards;
+        }
+
+        @keyframes aparecerSecret {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .cuadro-texto-imagen {
+            width: 85%;
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 30px;
+            background-color: rgba(255, 240, 242, 0.95);
+            border: 2px solid #FF0005;
+            border-radius: 15px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-sizing: border-box;
+        }
+
+        .galeria-superior {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            width: 100%;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .galeria-superior img {
+            width: 30%;
+            max-width: 200px;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 12px;
+            border: 2px solid #FF0005;
+            box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .cuadro-texto-imagen .contenido-texto {
+            width: 100%;
+            font-family: Arial, sans-serif;
+            color: #333333;
+            font-size: 16px;
+            line-height: 1.6;
+            text-align: left;
+        }
+
+        .imagen-inferior {
+            width: 100%;
+            max-width: 240px;
+            height: auto;
+            border-radius: 12px;
+            border: 2px solid #FF0005;
+            box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.15);
+            object-fit: cover;
+            margin-top: 20px;
+        }
+
+        .reproductor-flotante {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border: 2px solid #FF0005;
+            border-radius: 30px;
+            padding: 8px 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+            z-index: 999;
+            font-family: Arial, sans-serif;
+        }
+
+        .boton-musica {
+            background-color: #FF0005;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.2s ease;
+        }
+
+        .boton-musica:hover {
+            transform: scale(1.1);
+            background-color: #D60004;
+        }
+
+        .texto-musica {
+            font-size: 13px;
+            color: #333333;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. PANTALLA INICIAL DE BIENVENIDA -->
+    <div id="pantalla-inicio">
+        <h1 style="font-size: 32px;"> Con Mucho Amor, Para El Mejor Novio!! ❤️</h1>
+        <p style="font-family: Arial, sans-serif; color: #555; margin-top: 5px;">
+            Haz clic en el sobre para abrir tu regalo
+        </p>
+
+        <div class="wrapper-sobre sobre-grande" onclick="abrirPagina(this)">
+            <div class="solapa"></div>
+            <div class="bolsillo"></div>
+            <div class="carta-oculta">
+              Feliz Dia Mi Amor!
+            </div>
+        </div>
+    </div>
+
+    <h1 style="background-color: #FFC0CB; color: #8B0000; padding: 10px; border-radius: 10px; text-align: center;">Feliz Dia Del Novio Mi Niño De Ojitos Preciosos!! 💞 </h1>
+
+    <h2 style="background-color: #FFC0CB; color: #8B0000; text-align: center;"> Gracias Por Ser Mi Novio, Te Amo </h2>
+
+    <div class="cuadro-escrito">
+        <br> 
+        Feliz Día del Novio, mi vida. <br><br>
+        Hoy quiero recordarte lo mucho que significas para mí, pero no solamente diciéndote que te amo, sino diciéndote lo bonito que es tenerte en mi vida. A veces siento que no me doy cuenta de todo lo que hemos construido hasta que me pongo a pensar en cada momento que hemos compartido, en todas nuestras conversaciones, nuestras risas, nuestros abrazos y hasta en las cosas más simples que hacemos juntos.<br><br>
+        Me encanta que contigo puedo ser completamente yo. Puedo contarte mis cosas, hacerte parte de mis días, hablarte de cualquier tontería y saber que, de alguna manera, siempre terminas siendo una parte importante de lo que vivo.<br><br>
+        También amo que nuestra historia no sea perfecta. Hemos tenido momentos difíciles, hemos aprendido, hemos cometido errores y hemos tenido que entendernos muchas veces, pero creo que todo eso también ha hecho que lo nuestro sea más real. No quiero una relación perfecta, quiero una relación en la que los dos sigamos aprendiendo a ser cada vez mejor.<br><br>
+        Quiero seguir haciendo recuerdos contigo. Quiero que todavía nos queden muchísimas cosas por vivir, lugares por conocer, planes por cumplir, canciones que nos recuerden al otro y momentos que algún día podamos recordar diciendo “¿te acuerdas de cuando…?”.<br><br>
+        Y sobre todo, quiero que sepas que me hace muy feliz poder compartir esta etapa de mi vida contigo. Me siento muy afortunada de haberte encontrado y de poder llamarte mi novio.<br><br>
+        Gracias por amarme, por cuidarme, por hacerme sentir especial y por todas esas pequeñas cosas que haces que quizá para ti parecen normales, pero que para mí significan muchísimo.<br><br>
+        Espero que nunca olvides lo importante que eres para mí y lo mucho que te amo. No sé qué nos tenga preparado la vida, pero sí sé que hoy quiero seguir eligiéndote, seguir construyendo contigo y seguir disfrutando de todo lo que nos queda por vivir.<br><br>
+        Feliz Día del Novio, amor mío. Te amo muchísimo, más de lo que a veces sé explicar con palabras. ❤<br>
+
+        <a href="https://open.spotify.com/intl-es/track/7kT3Lrt2RmShYNycbS2ACQ?si=1c6e1fed50814247" target="_blank" class="boton-enlace" style="display: block; width: fit-content; margin: 30px auto;">
+        Te la dedico amor ❤
+    </a>
+    </div>
+
+    <!-- ✍️ MÁQUINA DE ESCRIBIR -->
+    <div class="cuadro-maquina">
+        <h2 style="margin-top: 0;">Un Mensaje Secreto Para Ti... </h2>
+        <div style="text-align: left;">
+            <span id="textoMaquina" class="texto-maquina"></span><span class="cursor"></span>
+        </div>
+        <button id="btnEscribir" class="boton-maquina" onclick="iniciarEscritura()"> Presiona para leer</button>
+    </div>
+
+    <div class="cuadro-collage">
+        <h2> MI HOMBRE, MI NIÑO, MI CIELO, MI AMOR, MI FUTURO ESPOSO, MI VIDA, MI TODOO!! </h2>
+        
+        <div class="galeria-grid">
+            <img src="foto 1.jpeg" alt="Foto 1">
+            <img src="foto 2.jpeg" alt="Foto 2">
+            <img src="foto 3.jpeg" alt="Foto 3">
+            <img src="foto 9.jpeg" alt="Foto 4">
+            <img src="foto 10.jpeg" alt="Foto 5">
+            <img src="foto 6.jpeg" alt="Foto 6">
+            <img src="foto 7.jpeg" alt="Foto 7">
+            <img src="foto 11.jpeg" alt="Foto 11">
+            <img src="foto 12.jpeg" alt="Foto 12">
+            <img src="foto 14.jpeg" alt="Foto 14">
+        </div>
+    </div>
+
+    <div class="cuadro-raspadita">
+        <h2>¡Rasca para descubrir tu video! </h2>
+        <p style="font-family: Arial, sans-serif; color: #555; margin-bottom: 10px;">
+            Pasa el cursor o tu dedo sobre el recuadro para revelar la sorpresa: 
+<br><small> (Puedes pausar el audio de fondo) </small></br>
+        </p>
+
+        <div class="contenedor-video">
+            <video id="miVideo" loop playsinline preload="auto">
+                <source src="paloma.mp4" type="video/mp4">
+                Tu navegador no soporta videos en HTML.
+            </video>
+            
+            <canvas id="capaRaspar"></canvas>
+        </div>
+
+        <button id="btnPlay" class="boton-reproducir" onclick="alternarVideo()">▶ Reproducir Video</button>
+    </div>
+
+    
+
+    <!-- 🔐 NUEVA SECCIÓN: CAJA FUERTE CON CLAVE SECRETA (IDEA 6) -->
+    <div class="cuadro-caja-fuerte">
+        <h2 style="margin-top: 0;">Caja Fuerte del Amor 🔒</h2>
+        <p style="color: #555;">Para abrir esta caja fuerte debes ingresar la clave secreta (Tip: Nuestra fecha especial <small>(diamesaño)</small>):</p>
+        
+        <div class="caja-fuerte-container">
+            <div id="iconoCandado" class="candado-icon">🔒</div>
+            <input type="password" id="claveInput" class="input-clave" placeholder="------" maxlength="8">
+            <br>
+            <button class="boton-caja" onclick="verificarClave()">🔓 Abrir Caja Fuerte</button>
+            <div id="mensajeError" class="mensaje-error"></div>
+        </div>
+
+        <!-- CONTENIDO QUE SE DESBLOQUEA -->
+        <div id="contenidoSecreto" class="contenido-secreto">
+            <h3 style="color: #FF0005; font-size: 24px; margin-top: 0;">🎉 ¡Premio Desbloqueado! 🎉</h3>
+            <p style="font-size: 18px; line-height: 1.6;">
+                ¡Felicidades mi amor! Has abierto la caja fuerte. ❤️️<br><br>
+              
+Si estás leyendo esto, significa que encontraste algo que quería esconderte a propósito.
+
+No es dinero, ni un secreto, ni algo que puedas gastar.
+
+Es un pedacito de todo lo que siento por ti.
+
+Quería que hubiera algo dentro de esta caja que no pudiera perderse fácilmente, porque hay cosas que quiero conservar de nosotros para siempre: nuestras risas, nuestros momentos, nuestras tonterías, nuestros planes y todo eso que solamente tú y yo entendemos.
+
+Y entre todas esas cosas, hay una que quiero que recuerdes especialmente:
+
+Te elegí a ti.
+
+Y hoy, mañana y mientras sigamos construyendo nuestra historia, quiero seguir encontrando razones para volver a elegirte.
+
+Así que guarda esta nota, pero guarda todavía más todo lo que hemos vivido. ❤️
+
+ <br><strong> Este boleto es válido por: 1 Cita Especial + Tu comida favorita pagada por mí + Abrazos ilimitados + Muchisimos besitos.</br>
+</strong> 
+            </p>
+        </div>
+    </div>
+
+    <div class="cuadro-texto-imagen">
+        <div class="galeria-superior">
+            <img src="cat's.jfif" alt="Foto especial 1">
+            <img src="novio.jpeg" alt="Foto especial 2">
+            <img src="cute.jfif" alt="Foto especial 3">
+        </div>
+
+        <div class="contenido-texto">
+            <h3 style="margin-top: 0; color: #FF0005; font-family: 'Seramonde', sans-serif; font-size: 28px; text-align: center;">
+                Mi Mayor Felicidad 💓
+            </h3>
+            <p style="text-align: left;">
+                Amor, palabras me faltan para agradecer todo lo que haz hecho por mí, de verdad, eres el mejor novio del mundo, a pesar de que ambos hemos tenido errores, seguimos juntos, seguimos adelante, como la gran pareja que somos.<br><br>
+                Compartir mi vida contigo sin duda ha sido lo mejor que me ha pasado, nunca creí que alguien llegara a amarme tanto como tú, que afortunada soy de tenerte.<br><br>
+                Gracias por permitirme ser tu novia y amarme tanto, que sea el primero de muchos regalos digitales que te hago, quiero que me acompañes durante este proceso de ser ingeniera en ciberseguridad.<br><br>
+                Nunca olvides lo mucho que te amo, nunca dejaré de amarte, amarte me hace feliz, me hace sentirme llena. Feliz día del novio amor, te amo!<br><br>
+                Quién va a amarte tanto como yo?<br><br>
+                Con muchísimo amor, tu linda novia Jei Romero.
+            </p>
+        </div>
+
+        <img src="nub.jpeg" alt="Foto especial final" class="imagen-inferior">
+    </div>
+
+    <div class="reproductor-flotante">
+        <button id="btnMusica" class="boton-musica" onclick="alternarMusica()">🎵</button>
+        <span class="texto-musica" id="estadoMusica">Nuestra Canción ❤️</span>
+        <audio id="musicaFondo" loop>
+            <source src="OASIS.mp3" type="audio/mp3">
+            Tu navegador no soporta el reproductor de audio.
+        </audio>
+    </div>
+<div class="reproductor-flotante">
+        <button id="btnMusica" class="boton-musica" onclick="alternarMusica()">🎵</button>
+        <span class="texto-musica" id="estadoMusica">Nuestra Canción ❤️</span>
+        <audio id="musicaFondo" loop>
+            <source src="nuestra-cancion.mp3" type="audio/mp3">
+            Tu navegador no soporta el reproductor de audio.
+        </audio>
+    </div>
+
+    <script>
+        const musica = document.getElementById('musicaFondo');
+        const btnMusica = document.getElementById('btnMusica');
+
+        function alternarMusica() {
+            if (musica.paused) {
+                musica.play();
+                btnMusica.textContent = '🔊';
+            } else {
+                musica.pause();
+                btnMusica.textContent = '🔇';
+            }
+        }
+
+        function abrirPagina(sobre) {
+            if (sobre.classList.contains('abierto')) return;
+            
+            sobre.classList.add('abierto');
+            
+            musica.play().then(() => {
+                btnMusica.textContent = '🔊';
+            }).catch(() => {
+                btnMusica.textContent = '🎵';
+            });
+
+            setTimeout(() => {
+                const pantalla = document.getElementById('pantalla-inicio');
+                pantalla.classList.add('oculto');
+            }, 800);
+        }
+
+        /* LÓGICA DE LA MÁQUINA DE ESCRIBIR */
+       const mensajeSecreto = `Solo quiero recordarte que eres la persona más especial de mi universo. Cada momento a tu lado se convierte en mi recuerdo favorito. Gracias por ser mi lugar seguro, mi sonrisa diaria y mi amor bonito. Te amo con todo mi corazón. 💕
+
+
+Feliz Día del Novio. ❤️
+
+Hoy simplemente quiero celebrar que eres tú quien ocupa este lugar en mi vida. Me parece muy bonito poder llamarte mi novio y saber que, entre tantas personas, nuestras vidas terminaron encontrándose.
+
+No necesito que todo sea perfecto para sentirme feliz de tenerte. Amo nuestros momentos bonitos, nuestras tonterías, nuestras conversaciones y hasta esas pequeñas cosas que probablemente para alguien más no significarían nada, pero que para mí terminan siendo recuerdos que quiero guardar.
+
+Me emociona pensar en todo lo que todavía nos falta vivir: planes, lugares, días, fotografías, canciones y momentos que todavía no existen, pero que algún día van a formar parte de nuestra historia.
+
+Gracias por ser parte de mi vida y por dejarme ser parte de la tuya. Espero que nunca dudes de lo muchísimo que te amo y de lo especial que eres para mí.
+
+Feliz Día del Novio, mi niño. Qué bonito poder decir que tú eres mi novio. Te amo muchísimo. ❤️`;
+
+let indiceTexto = 0;
+let escribiendo = false;
+
+function iniciarEscritura() {
+    if (escribiendo) return;
+    escribiendo = true;
+    document.getElementById('btnEscribir').style.display = 'none';
+    document.getElementById('textoMaquina').textContent = '';
+    indiceTexto = 0;
+    escribirCaracter();
+}
+
+function escribirCaracter() {
+    if (indiceTexto < mensajeSecreto.length) {
+        document.getElementById('textoMaquina').textContent += mensajeSecreto.charAt(indiceTexto);
+        indiceTexto++;
+        // 30 milisegundos por letra para que sea fluido y no tarde años
+        setTimeout(escribirCaracter, 30); 
+    }
+}
+        /* 🔐 LÓGICA DE LA CAJA FUERTE */
+        // PUEDES CAMBIAR ESTA CLAVE POR LA QUE PREFIERAS:
+        const claveCorrecta = "25102025"; 
+
+        function verificarClave() {
+            const input = document.getElementById('claveInput').value.trim();
+            const mensajeError = document.getElementById('mensajeError');
+            const candado = document.getElementById('iconoCandado');
+            const contenido = document.getElementById('contenidoSecreto');
+
+            if (input === claveCorrecta) {
+                mensajeError.style.color = "#00ff66";
+                mensajeError.textContent = "¡Acceso concedido!";
+                candado.textContent = "🔓";
+                candado.style.transform = "scale(1.2)";
+                contenido.style.display = "block";
+            } else {
+                mensajeError.style.color = "#ff4d4d";
+                mensajeError.textContent = "❌ Clave incorrecta, ¡intenta de nuevo!";
+                candado.textContent = "🔒";
+                
+                // Efecto de temblor al fallar
+                const container = document.querySelector('.caja-fuerte-container');
+                container.style.transform = "translateX(5px)";
+                setTimeout(() => container.style.transform = "translateX(-5px)", 100);
+                setTimeout(() => container.style.transform = "translateX(0)", 200);
+            }
+        }
+
+        /* LÓGICA DE LA RASPADITA */
+        const canvas = document.getElementById('capaRaspar');
+        const ctx = canvas.getContext('2d');
+        const video = document.getElementById('miVideo');
+        const btnPlay = document.getElementById('btnPlay');
+        let rascando = false;
+
+        function redimensionarCanvas() {
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+            
+            ctx.fillStyle = '#FFC0CB';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = '#FF0005';
+            ctx.font = 'bold 20px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText(' ¡Rasca aquí! ', canvas.width / 2, canvas.height / 2);
+        }
+
+        window.addEventListener('load', redimensionarCanvas);
+
+        function raspar(e) {
+            if (!rascando) return;
+            
+            if (video.paused) {
+                video.play();
+                btnPlay.textContent = '⏸ Pausar Video';
+            }
+
+            const rect = canvas.getBoundingClientRect();
+            let x, y;
+
+            if (e.touches) {
+                x = e.touches[0].clientX - rect.left;
+                y = e.touches[0].clientY - rect.top;
+            } else {
+                x = e.clientX - rect.left;
+                y = e.clientY - rect.top;
+            }
+
+            ctx.globalCompositeOperation = 'destination-out';
+            ctx.beginPath();
+            ctx.arc(x, y, 25, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        function alternarVideo() {
+            if (video.paused) {
+                video.play();
+                btnPlay.textContent = '⏸ Pausar Video';
+            } else {
+                video.pause();
+                btnPlay.textContent = '▶ Reproducir Video';
+            }
+        }
+
+        canvas.addEventListener('mousedown', (e) => { rascando = true; raspar(e); });
+        canvas.addEventListener('mousemove', raspar);
+        canvas.addEventListener('mouseup', () => rascando = false);
+
+        canvas.addEventListener('touchstart', (e) => { rascando = true; raspar(e); });
+        canvas.addEventListener('touchmove', raspar);
+        canvas.addEventListener('touchend', () => rascando = false);
+    </script>
+</body>
+</html>
